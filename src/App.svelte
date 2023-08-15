@@ -4,7 +4,7 @@
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   // import simulation from "d3-force/src/simulation";
 
-  const RADIUS = 5
+  const RADIUS = 8
   const simulation = forceSimulation(data)
   $: {
   simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
@@ -36,14 +36,39 @@
   let innerHeight = height - margin.top - margin.bottom;
 
   // $: console.log({innerWidth})
-  import {scaleLinear, scaleBand} from "d3-scale"; 
+  import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
   .domain([2015, 2023]) //INPUT
   .range([0, innerWidth]) //OUTPUT
 
+  import { mean, rollups } from "d3-array";
+
+  const events = rollups(
+    data,
+    (v) => mean(v, (d) => d.year),
+    (d) => d.event
+    )
+    .sort((a,b) => a[1] - b[1])
+    .map((d) => d[0]);
+
+  console.log({events})
+
+  const colorRange = [
+    "#0b4572",
+    "#2f8fce",
+    "#c6e7fa",
+    "#c7432b",
+    "#efc530",
+    "#999999"
+  ]
+
+  const colorScale = scaleOrdinal()
+  .domain(events)
+  .range(colorRange)
+
   let yScale = scaleBand()
-  .domain(data.map(d => d.event) )
+  .domain(events)
   .range([innerHeight, 0])
 
 </script>
@@ -56,7 +81,8 @@
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill='#ff00ff'
+      fill={colorScale(node.event)}
+      stroke="black"
       />
     {/each}
   </g>
