@@ -1,25 +1,35 @@
 <script> //test
   import data from "$data/data.js";
-  console.log(data);
+  //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   // import simulation from "d3-force/src/simulation";
 
   const RADIUS = 5
-  $: simulation = forceSimulation(data)
-  .force("x", forceX().x(d => xScale(d.year)).strength(0.8))
-  .force("y", forceY().y(d => yScale(d.event)).strength(0.2))
+  const simulation = forceSimulation(data)
+  $: {
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
+  .force("y", forceY().y(d => yScale(d.event)).strength(0.4))
   .force("collide", forceCollide().radius(RADIUS))
+  .alpha(0.3)
+  .alphaDecay(0.0005)
+  .restart()
+  }
 
   $: console.log( simulation.nodes( ) )
 
-  let width = 40,
+  let nodes = []; // An empty array which will be populated once the simulation ticks
+  simulation.on("tick", () => {
+    nodes = simulation.nodes(); // Update the nodes array
+});
+
+  let width = 400,
       height = 400;
 
   const margin = {
-    top: 0,
-    right: 0,
+    top: 20,
+    right: 30,
     bottom: 20,
-    left: 0 
+    left: 30 
   };
 
   $: innerWidth = width - margin.left - margin.right;
@@ -36,7 +46,6 @@
   .domain(data.map(d => d.event) )
   .range([innerHeight, 0])
 
-  $: nodes = simulation.nodes();
 </script>
 
 <div class="chart-container" bind:clientWidth={width}>
