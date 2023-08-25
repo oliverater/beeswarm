@@ -4,6 +4,8 @@
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   // import simulation from "d3-force/src/simulation";
 
+  import AxisX from "$components/AxisX.svelte";
+
   const RADIUS = 8
   const simulation = forceSimulation(data)
   $: {
@@ -76,6 +78,7 @@
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
+    <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     {#each nodes as node}
     <circle
       cx={node.x}
