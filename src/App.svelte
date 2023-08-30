@@ -5,6 +5,8 @@
   // import simulation from "d3-force/src/simulation";
 
   import AxisX from "$components/AxisX.svelte";
+  import AxisY from "$components/AxisY.svelte";
+  import Legend from "$components/Legend.svelte";
 
   const RADIUS = 8
   const simulation = forceSimulation(data)
@@ -25,13 +27,13 @@
 });
 
   let width = 400,
-      height = 400;
+      height = 600;
 
   const margin = {
-    top: 20,
-    right: 30,
-    bottom: 20,
-    left: 30 
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 150 
   };
 
   $: innerWidth = width - margin.left - margin.right;
@@ -75,16 +77,19 @@
 
 </script>
 
+<h1>Extreme weather attribution study tracker</h1>
+<Legend {colorScale}></Legend>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
+    <AxisY {yScale}></AxisY>
     {#each nodes as node}
     <circle
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={colorScale(node.event)}
+      fill={colorScale(node.region)}
       stroke="black"
       />
     {/each}
@@ -93,5 +98,11 @@
 </div>
 
 <style>
-  
+  /* :global(.tick text, .axis-title)   */
+  h1{
+    font-size:1.6em;
+    font-weight: bold;
+    color: #333333;
+    margin-left:0.8em;
+  }
 </style>
