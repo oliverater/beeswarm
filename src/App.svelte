@@ -12,7 +12,7 @@
   const simulation = forceSimulation(data)
   $: {
   simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
-  .force("y", forceY().y(d => yScale(d.event)).strength(0.4))
+  .force("y", forceY().y(d => yScale(d.region)).strength(0.4))
   .force("collide", forceCollide().radius(RADIUS))
   .alpha(0.3)
   .alphaDecay(0.0005)
@@ -46,39 +46,48 @@
   .domain([2015, 2023]) //INPUT
   .range([0, innerWidth]) //OUTPUT
 
-  import { mean, rollups } from "d3-array";
+  // import { mean, rollups } from "d3-array";
 
-  const events = rollups(
-    data,
-    (v) => mean(v, (d) => d.year),
-    (d) => d.event
-    )
-    .sort((a,b) => a[1] - b[1])
-    .map((d) => d[0]);
+  // const region = rollups(
+  //   data,
+  //   (v) => mean(v, (d) => d.year),
+  //   (d) => d.region
+  //   )
+  //   .sort((a,b) => a[1] - b[1])
+  //   .map((d) => d[0]);
 
-  console.log({events})
+const region = data.map(d => d.region);
+const impact = data.map(d => d.impact);
+
+  // console.log({events})
 
   const colorRange = [
-    "#0b4572",
-    "#2f8fce",
-    "#c6e7fa",
-    "#c7432b",
-    "#efc530",
-    "#999999"
+    "#999999", //drought
+    "#0b4572", //extreme rainfall
+    "#c7432b", // heatwave
+    "#2f8fce", // Storm, extreme rainfall
+    "#efc530", // Wildfire
+    "#c6e7fa" // Cold spell
   ]
 
   const colorScale = scaleOrdinal()
-  .domain(events)
+  .domain(region)
   .range(colorRange)
 
+
+  const legendScale = scaleOrdinal()
+  .domain(impact)
+  .range(colorRange)
+
+
   let yScale = scaleBand()
-  .domain(events)
-  .range([innerHeight, 0])
+  .domain(region)
+  .range([0, innerHeight])
 
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
-<Legend {colorScale}></Legend>
+<Legend {legendScale}></Legend>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
@@ -89,8 +98,11 @@
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={colorScale(node.region)}
+      fill={colorScale(node.impact)}
       stroke="black"
+      on:mouseover={() => {
+        console.log(node)
+      }}
       />
     {/each}
   </g>

@@ -1,13 +1,17 @@
 <script>
-    export let colorScale;
-    console.log({colorScale})
+    export let legendScale;
+    console.log({legendScale})
+
+//     const colorScale = scaleOrdinal()
+//   .domain(region)
+//   .range(colorRange)
 
 </script>
     <div class="legend">
-        {#each colorScale.domain() as region}
+        {#each legendScale.domain() as impact}
             <p>
-                <span style="background-color: {colorScale(region)}"></span>
-                {region}
+                <span style="background-color: {legendScale(impact)}"></span>
+                {impact}
             </p>
         {/each}
     </div>
