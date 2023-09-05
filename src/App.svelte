@@ -7,6 +7,7 @@
   import AxisX from "$components/AxisX.svelte";
   import AxisY from "$components/AxisY.svelte";
   import Legend from "$components/Legend.svelte";
+  import Tooltip from "$components/Tooltip.svelte";
 
   const RADIUS = 8
   const simulation = forceSimulation(data)
@@ -84,29 +85,41 @@ const impact = data.map(d => d.impact);
   .domain(region)
   .range([0, innerHeight])
 
+  let hovered;
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale}></Legend>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height}>
-  <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
+  <g class="inner-chart" transform="translate({margin.left}, {margin.top})"
+  on:mouseleave={() => {
+    hovered = null;
+  }}>
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
     {#each nodes as node}
+    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <circle
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={colorScale(node.impact)}
+      fill={legendScale(node.impact)}
       stroke="black"
       on:mouseover={() => {
-        console.log(node)
+        hovered = node;
       }}
+      on:focus={() => {
+        hovered = node;
+      }}
+      tabindex="0"
       />
     {/each}
   </g>
 </svg>
+  {#if hovered}
+    <Tooltip data={hovered} {legendScale}></Tooltip>
+  {/if}
 </div>
 
 <style>
