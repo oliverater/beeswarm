@@ -2,12 +2,14 @@
   import data from "$data/data.js";
   //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
+  import { fade } from "svelte/transition";
   // import simulation from "d3-force/src/simulation";
 
   import AxisX from "$components/AxisX.svelte";
   import AxisY from "$components/AxisY.svelte";
   import Legend from "$components/Legend.svelte";
   import Tooltip from "$components/Tooltip.svelte";
+
 
   const RADIUS = 8
   const simulation = forceSimulation(data)
@@ -85,19 +87,21 @@ const impact = data.map(d => d.impact);
   .domain(region)
   .range([0, innerHeight])
 
-  let hovered;
+  let tooltip;
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale}></Legend>
 <div class="chart-container" bind:clientWidth={width}>
-<svg {width} {height}>
-  <g class="inner-chart" transform="translate({margin.left}, {margin.top})"
-  on:mouseleave={() => {
-    hovered = null;
-  }}>
+<svg {width} {height} on:click={() => {
+  tooltip = null;
+}}>
+  <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
+    {#if tooltip}
+    <line x1={tooltip.x} x2={tooltip.x} y1={innerHeight} y2={tooltip.y} stroke={legendScale(tooltip.impact)} stroke-width="2" out:fade/>
+    {/if}
     {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <circle
@@ -106,19 +110,19 @@ const impact = data.map(d => d.impact);
       r={RADIUS}
       fill={legendScale(node.impact)}
       stroke="black"
-      on:mouseover={() => {
-        hovered = node;
+      on:click={() => {
+        tooltip = node;
       }}
       on:focus={() => {
-        hovered = node;
+        tooltip = node;
       }}
-      tabindex="0"
+      tabindex=0
       />
     {/each}
   </g>
 </svg>
-  {#if hovered}
-    <Tooltip data={hovered} {legendScale}></Tooltip>
+  {#if tooltip}
+    <Tooltip data={tooltip} {legendScale}></Tooltip>
   {/if}
 </div>
 
@@ -129,5 +133,14 @@ const impact = data.map(d => d.impact);
     font-weight: bold;
     color: #333333;
     margin-left:0.8em;
+  }
+  circle{
+    cursor:pointer;
+  }
+  circle:hover{
+    filter: brightness(115%);
+  }
+  circle:focus{
+    outline:none;
   }
 </style>

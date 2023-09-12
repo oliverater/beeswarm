@@ -1,9 +1,13 @@
 <script>
     export let data;
     export let legendScale;
+
+    import {fly, fade} from "svelte/transition";
 </script>
 
 <div class="tooltip"
+    in:fly={{ y:5, duration: 200, delay: 50}}
+    out:fade
     style="
     top: {data.y}px;
     left: {data.x +125}px;">
@@ -34,7 +38,6 @@
         box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
         padding: 8px 6px;
         border-radius: 3px;
-        pointer-events: none;
         display: inline-grid;
     }
     .impact{
