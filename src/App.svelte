@@ -124,12 +124,12 @@ const impact = data.map(d => d.impact);
         tooltip = null;
       }}>X</div>
       <h3>
-          <span class="impact" style="background-color:{legendScale(data.impact)}">{data.impact}</span><a href="{data.study}" target="_blank" rel="noreferrer">{data.tooltipDate},{data.country}</a>
+          <span class="impact" style="background-color:{legendScale(tooltip.impact)}">{tooltip.impact}</span><a href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate},{tooltip.country}</a>
       </h3>
-          <p><span class="key">Outcome:</span>{data.outcomeSummary}</p>
-          <p><span class="key">Impacts:</span>{data.impactSummary}</p>
-          <p><span class="key">Vulnerability:</span>{data.vulnerabilitySummary}</p>
-          <p><span class="key">Resilience:</span>{data.resilienceSummary}</p>
+          <p><span class="key">Outcome:</span>{tooltip.outcomeSummary}</p>
+          <p><span class="key">Impacts:</span>{tooltip.impactSummary}</p>
+          <p><span class="key">Vulnerability:</span>{tooltip.vulnerabilitySummary}</p>
+          <p><span class="key">Resilience:</span>{tooltip.resilienceSummary}</p>
   </div>
   {/if}
 </div>
