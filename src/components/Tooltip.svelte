@@ -11,24 +11,13 @@
     style="
     top: {data.y}px;
     left: {data.x +125}px;">
-    <h1>
-        {data.country}
-    </h1>
-        {#if data.impact != "Cold spell" || data.impact != "Wildfire" }
-        <span class="impact" style="background-color:{legendScale(data.impact)}">
-            {data.impact}
-        </span>
-        {:else}
-        <span class="impact" style="background-color:{legendScale(data.impact)} color:black">
-            {data.impact}
-        </span>
-        {/if}
-        <span class="outcome">
-            {data.outcome}
-        </span>
-        <span class="link">
-            <a href="{data.study}" target="_blank">{data.date}</a>
-        </span>
+    <h3>
+        <span class="impact" style="background-color:{legendScale(data.impact)}">{data.impact}</span><a href="{data.study}" target="_blank" rel="noreferrer">{data.tooltipDate},{data.country}</a>
+    </h3>
+        <p><span class="key">Outcome:</span>{data.outcomeSummary}</p>
+        <p><span class="key">Impacts:</span>{data.impactSummary}</p>
+        <p><span class="key">Vulnerability:</span>{data.vulnerabilitySummary}</p>
+        <p><span class="key">Resilience:</span>{data.resilienceSummary}</p>
 </div> 
 
 <style>
@@ -45,5 +34,8 @@
         padding:1.2px;
         width: fit-content;
         color: #f4f4f4;
+    }
+    span.key{
+        font-weight:700;
     }
 </style>
