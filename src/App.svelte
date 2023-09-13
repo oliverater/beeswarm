@@ -88,13 +88,14 @@ const impact = data.map(d => d.impact);
   .range([0, innerHeight])
 
   let tooltip;
-  let visible;
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale}></Legend>
 <div class="chart-container" bind:clientWidth={width}>
-<svg {width} {height}>
+<svg {width} {height} on:click={() => {
+  tooltip = null;
+}}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
@@ -105,7 +106,8 @@ const impact = data.map(d => d.impact);
       cy={node.y}
       r={RADIUS}
       fill={legendScale(node.impact)}
-      stroke="black"
+      stroke={tooltip ? tooltip === node ? "black" : "transparent" : "black"}
+      opacity={tooltip ? tooltip === node ? 1 : 0.3 : 1}
       on:click={() => {
         tooltip = node;
       }}
@@ -126,21 +128,27 @@ const impact = data.map(d => d.impact);
       <h3>
           <span class="impact" style="background-color:{legendScale(tooltip.impact)}">{tooltip.impact}</span><a href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate},{tooltip.country}</a>
       </h3>
-          <p><span class="key">Outcome:</span>{tooltip.outcomeSummary}</p>
-          <p><span class="key">Impacts:</span>{tooltip.impactSummary}</p>
-          <p><span class="key">Vulnerability:</span>{tooltip.vulnerabilitySummary}</p>
-          <p><span class="key">Resilience:</span>{tooltip.resilienceSummary}</p>
+          <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+          <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
+          <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
+          <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
   </div>
   {/if}
 </div>
 
 <style>
   /* :global(.tick text, .axis-title)   */
-  h1{
+  h1,h3{
     font-size:1.6em;
     font-weight: bold;
     color: #333333;
+  }
+  h1{
     margin-left:0.8em;
+  }
+  p.summary{
+    line-height: 1.5;
+    font-size:1.25em;
   }
   circle{
     cursor:pointer;
