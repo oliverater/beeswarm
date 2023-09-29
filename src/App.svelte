@@ -88,10 +88,12 @@ const impact = data.map(d => d.impact);
   .range([0, innerHeight])
 
   let tooltip;
+
+  let hoveredLegend;
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
-<Legend {legendScale}></Legend>
+<Legend {legendScale} bind:hoveredLegend></Legend>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height} on:click={() => {
   tooltip = null;
@@ -106,8 +108,8 @@ const impact = data.map(d => d.impact);
       cy={node.y}
       r={RADIUS}
       fill={legendScale(node.impact)}
-      stroke={tooltip ? tooltip === node ? "black" : "transparent" : "black"}
-      opacity={tooltip ? tooltip === node ? 1 : 0.3 : 1}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? 1 : 0.3 : 1}
       on:click={() => {
         tooltip = node;
       }}
