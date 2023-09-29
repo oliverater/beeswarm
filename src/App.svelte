@@ -99,9 +99,6 @@ const impact = data.map(d => d.impact);
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
-    {#if tooltip}
-    <line x1={tooltip.x} x2={tooltip.x} y1={innerHeight} y2={tooltip.y} stroke={legendScale(tooltip.impact)} stroke-width="2" out:fade/>
-    {/if}
     {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <circle
@@ -109,7 +106,8 @@ const impact = data.map(d => d.impact);
       cy={node.y}
       r={RADIUS}
       fill={legendScale(node.impact)}
-      stroke="black"
+      stroke={tooltip ? tooltip === node ? "black" : "transparent" : "black"}
+      opacity={tooltip ? tooltip === node ? 1 : 0.3 : 1}
       on:click={() => {
         tooltip = node;
       }}
@@ -122,17 +120,35 @@ const impact = data.map(d => d.impact);
   </g>
 </svg>
   {#if tooltip}
-    <Tooltip data={tooltip} {legendScale}></Tooltip>
+    <!-- <Tooltip data={tooltip} {legendScale}></Tooltip> -->
+    <div class="tooltip">
+      <div class="close-tooltip" on:click={() => {
+        tooltip = null;
+      }}>X</div>
+      <h3>
+          <span class="impact" style="background-color:{legendScale(tooltip.impact)}">{tooltip.impact}</span><a href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate},{tooltip.country}</a>
+      </h3>
+          <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+          <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
+          <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
+          <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
+  </div>
   {/if}
 </div>
 
 <style>
   /* :global(.tick text, .axis-title)   */
-  h1{
+  h1,h3{
     font-size:1.6em;
     font-weight: bold;
     color: #333333;
+  }
+  h1{
     margin-left:0.8em;
+  }
+  p.summary{
+    line-height: 1.5;
+    font-size:1.25em;
   }
   circle{
     cursor:pointer;
@@ -143,4 +159,38 @@ const impact = data.map(d => d.impact);
   circle:focus{
     outline:none;
   }
+  .tooltip{
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
+        padding: 2.5em;
+        border-radius: 3px;
+        display: inline-grid;
+        width: auto;
+        top:5%;
+        left:20%;
+        right:10%;
+        bottom:10%;
+    }
+    .close-tooltip{
+        position: absolute;
+        right: 0;
+        margin-right: 1.2em;
+        margin-top: 1.2em;
+        font-size: 1.2em;
+        font-weight: 700;
+    }
+    .close-tooltip:hover{
+        filter: brightness(15%);
+        cursor: pointer;
+    }
+    .impact{
+        border-radius:3px;
+        padding:1.2px;
+        width: fit-content;
+        color: #f4f4f4;
+    }
+    span.key{
+        font-weight:700;
+    }
 </style>
