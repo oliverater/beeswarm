@@ -36,16 +36,6 @@
   .domain([2015, 2023]) //INPUT
   .range([0, innerWidth]) //OUTPUT
 
-  // import { mean, rollups } from "d3-array";
-
-  // const region = rollups(
-  //   data,
-  //   (v) => mean(v, (d) => d.year),
-  //   (d) => d.region
-  //   )
-  //   .sort((a,b) => a[1] - b[1])
-  //   .map((d) => d[0]);
-
 const colorRange = [
     "#999999", //drought
     "#0b4572", //extreme rainfall
@@ -55,17 +45,8 @@ const colorRange = [
     "#c6e7fa" // Cold spell
   ]
 
-  const colorRange2 = [
-    "#999999", //drought
-    "#0b4572", //extreme rainfall
-    "#c7432b", // heatwave
-    "#2f8fce", // Storm, extreme rainfall
-    "#ff00ff", // Wildfire
-  ]
-
 let yAxisLabel = region; // Initial y-axis label
 let legendLabel = impact; // Initial legend label
-let colors = colorRange; // Initial colours
 
   $: colorScale = scaleOrdinal()
   .domain(legendLabel)
@@ -83,12 +64,12 @@ let colors = colorRange; // Initial colours
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.4))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.4))
+  .strength(0.3))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.3)
+  .alpha(0.1)
   .alphaDecay(0.0005)
   .restart()
   }
@@ -104,22 +85,16 @@ let colors = colorRange; // Initial colours
 
   let hoveredLegend;
   let groupbyContinent = true;
-  $: console.log(groupbyContinent);
+
+//update chart
+
   const toggleLabels = () => {
-    // Toggle the labels between 'value' and 'region' for both yAxis and legend
     yAxisLabel = yAxisLabel === impact ? region : impact;
     legendLabel = legendLabel === region ? impact : region;
-    // colors = colors === colorRange ? colorRange2 : colorRange;
     groupbyContinent = !groupbyContinent;
-    // Re-render the chart based on the updated labels
-    // updateChart();
   };
 
-//   const updateChart = () => {
-// };
-
 let checked = false;
-let color = "#2196F3";
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
@@ -133,6 +108,7 @@ let color = "#2196F3";
     <p class="{checked ? 'bold': ''}">Impact</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <svg {width} {height} on:click={() => {
   tooltip = null;
 }}>
@@ -141,6 +117,7 @@ let color = "#2196F3";
     <AxisY {yScale}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <circle
       cx={node.x}
       cy={node.y}
@@ -160,8 +137,8 @@ let color = "#2196F3";
   </g>
 </svg>
   {#if tooltip}
-    <!-- <Tooltip data={tooltip} {legendScale}></Tooltip> -->
     <div class="tooltip">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div class="close-tooltip" on:click={() => {
         tooltip = null;
       }}>X</div>
@@ -175,7 +152,6 @@ let color = "#2196F3";
   </div>
   {/if}
 </div>
-<!-- <button on:click={toggleLabels}>Toggle Labels</button> -->
 
 <style>
   .bold{
