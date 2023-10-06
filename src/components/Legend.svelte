@@ -1,17 +1,25 @@
 <script>
     export let legendScale;
-    console.log({legendScale})
+    export let hoveredLegend;
+
+    $: console.log({hoveredLegend})
 
 //     const colorScale = scaleOrdinal()
 //   .domain(region)
 //   .range(colorRange)
 
 </script>
-    <div class="legend">
-        {#each legendScale.domain() as impact}
-            <p>
-                <span style="background-color: {legendScale(impact)}"></span>
-                {impact}
+    <div class="legend" on:mouseout={() =>{
+        hoveredLegend = null;
+    }}>
+        {#each legendScale.domain() as legendLabel}
+            <p
+            on:mouseover={() => {
+                hoveredLegend = legendLabel;
+            }}
+            class:unhovered={hoveredLegend && hoveredLegend !== legendLabel}>
+                <span style="background-color: {legendScale(legendLabel)}"></span>
+                {legendLabel}
             </p>
         {/each}
     </div>
@@ -37,5 +45,10 @@
         display: flex;
         align-items: center;
         column-gap: 5px;
+        transition: opacity  300ms ease;
+        cursor: pointer;
+    }
+    .unhovered{
+        opacity: 0.3;
     }
 </style>

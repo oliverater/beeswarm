@@ -12,22 +12,9 @@
 
 
   const RADIUS = 8
-  const simulation = forceSimulation(data)
-  $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
-  .force("y", forceY().y(d => yScale(d.region)).strength(0.4))
-  .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.3)
-  .alphaDecay(0.0005)
-  .restart()
-  }
 
-  $: console.log( simulation.nodes( ) )
-
-  let nodes = []; // An empty array which will be populated once the simulation ticks
-  simulation.on("tick", () => {
-    nodes = simulation.nodes(); // Update the nodes array
-});
+  const region = data.map(d => d.region);
+  const impact = data.map(d => d.impact);
 
   let width = 400,
       height = 600;
@@ -59,12 +46,7 @@
   //   .sort((a,b) => a[1] - b[1])
   //   .map((d) => d[0]);
 
-const region = data.map(d => d.region);
-const impact = data.map(d => d.impact);
-
-  // console.log({events})
-
-  const colorRange = [
+const colorRange = [
     "#999999", //drought
     "#0b4572", //extreme rainfall
     "#c7432b", // heatwave
@@ -73,25 +55,83 @@ const impact = data.map(d => d.impact);
     "#c6e7fa" // Cold spell
   ]
 
-  const colorScale = scaleOrdinal()
-  .domain(region)
+  const colorRange2 = [
+    "#999999", //drought
+    "#0b4572", //extreme rainfall
+    "#c7432b", // heatwave
+    "#2f8fce", // Storm, extreme rainfall
+    "#ff00ff", // Wildfire
+  ]
+
+let yAxisLabel = region; // Initial y-axis label
+let legendLabel = impact; // Initial legend label
+let colors = colorRange; // Initial colours
+
+  $: colorScale = scaleOrdinal()
+  .domain(legendLabel)
   .range(colorRange)
 
 
-  const legendScale = scaleOrdinal()
-  .domain(impact)
+  $: legendScale = scaleOrdinal()
+  .domain(legendLabel)
   .range(colorRange)
 
 
-  let yScale = scaleBand()
-  .domain(region)
-  .range([0, innerHeight])
+  $: yScale = scaleBand()
+  .domain(yAxisLabel)
+  .range([0, innerHeight]);
+
+  const simulation = forceSimulation(data)
+  $: {
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
+  .force("y", forceY()
+  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
+  .strength(0.4))
+  .force("collide", forceCollide().radius(RADIUS))
+  .alpha(0.3)
+  .alphaDecay(0.0005)
+  .restart()
+  }
+
+  $: console.log( simulation.nodes( ) )
+
+  let nodes = []; // An empty array which will be populated once the simulation ticks
+  $: simulation.on("tick", () => {
+    nodes = simulation.nodes(); // Update the nodes array
+});
 
   let tooltip;
+
+  let hoveredLegend;
+  let groupbyContinent = true;
+  $: console.log(groupbyContinent);
+  const toggleLabels = () => {
+    // Toggle the labels between 'value' and 'region' for both yAxis and legend
+    yAxisLabel = yAxisLabel === impact ? region : impact;
+    legendLabel = legendLabel === region ? impact : region;
+    // colors = colors === colorRange ? colorRange2 : colorRange;
+    groupbyContinent = !groupbyContinent;
+    // Re-render the chart based on the updated labels
+    // updateChart();
+  };
+
+//   const updateChart = () => {
+// };
+
+let checked = false;
+let color = "#2196F3";
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
-<Legend {legendScale}></Legend>
+<Legend {legendScale} bind:hoveredLegend></Legend>
+<div id="toggle-container">
+    <p class="{checked ? '': 'bold'}">Continent</p>
+      <label class="switch">
+      <input type="checkbox" bind:checked on:click={toggleLabels}/>
+      <span class="slider" />
+    </label>
+    <p class="{checked ? 'bold': ''}">Impact</p>
+</div>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height} on:click={() => {
   tooltip = null;
@@ -99,15 +139,15 @@ const impact = data.map(d => d.impact);
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
-    {#each nodes as node}
+    $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <circle
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={legendScale(node.impact)}
-      stroke={tooltip ? tooltip === node ? "black" : "transparent" : "black"}
-      opacity={tooltip ? tooltip === node ? 1 : 0.3 : 1}
+      fill={groupbyContinent ? legendScale(node.impact) : legendScale(node.region)}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? 1 : 0.3 : 1}
       on:click={() => {
         tooltip = node;
       }}
@@ -135,9 +175,12 @@ const impact = data.map(d => d.impact);
   </div>
   {/if}
 </div>
+<!-- <button on:click={toggleLabels}>Toggle Labels</button> -->
 
 <style>
-  /* :global(.tick text, .axis-title)   */
+  .bold{
+    font-weight: 700;
+  }
   h1,h3{
     font-size:1.6em;
     font-weight: bold;
@@ -192,5 +235,70 @@ const impact = data.map(d => d.impact);
     }
     span.key{
         font-weight:700;
+    }
+
+    /* toggle */
+    #toggle-container{
+      display:flex; align-items:center;
+      flex-direction: row;
+      justify-content: left;
+      margin-left: 1.3em;
+      margin-top: 0.5em;
+      flex-wrap: wrap;
+      column-gap: 10px;
+      row-gap: 5px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 35px;
+      height: 20px;
+    }
+  
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #2f8fce;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 20px;
+    }
+  
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: 0.2s;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+  
+    input:checked + .slider {
+      background-color: #57b0eb;
+    }
+  
+    input:checked + .slider {
+      box-shadow: 0 0 1px #57b0eb;
+    }
+  
+    input:checked + .slider:before {
+      -webkit-transform: translateX(16px);
+      -ms-transform: translateX(16px);
+      transform: translateX(16px);
     }
 </style>
