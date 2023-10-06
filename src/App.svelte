@@ -69,12 +69,12 @@ let colors = colorRange; // Initial colours
 
   $: colorScale = scaleOrdinal()
   .domain(legendLabel)
-  .range(colors)
+  .range(colorRange)
 
 
   $: legendScale = scaleOrdinal()
   .domain(legendLabel)
-  .range(colors)
+  .range(colorRange)
 
 
   $: yScale = scaleBand()
@@ -109,7 +109,7 @@ let colors = colorRange; // Initial colours
     // Toggle the labels between 'value' and 'region' for both yAxis and legend
     yAxisLabel = yAxisLabel === impact ? region : impact;
     legendLabel = legendLabel === region ? impact : region;
-    colors = colors === colorRange ? colorRange2 : colorRange;
+    // colors = colors === colorRange ? colorRange2 : colorRange;
     groupbyContinent = !groupbyContinent;
     // Re-render the chart based on the updated labels
     // updateChart();
@@ -134,7 +134,7 @@ let colors = colorRange; // Initial colours
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={colorScale(node.impact)}
+      fill={groupbyContinent ? legendScale(node.impact) : legendScale(node.region)}
       stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? "black" : "transparent" : "black"}
       opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? 1 : 0.3 : 1}
       on:click={() => {
