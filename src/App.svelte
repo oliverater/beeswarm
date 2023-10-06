@@ -117,10 +117,21 @@ let colors = colorRange; // Initial colours
 
 //   const updateChart = () => {
 // };
+
+let checked = false;
+let color = "#2196F3";
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale} bind:hoveredLegend></Legend>
+<div id="toggle-container">
+    <p class="{checked ? '': 'bold'}">Continent</p>
+      <label class="switch">
+      <input type="checkbox" bind:checked on:click={toggleLabels}/>
+      <span class="slider" />
+    </label>
+    <p class="{checked ? 'bold': ''}">Impact</p>
+</div>
 <div class="chart-container" bind:clientWidth={width}>
 <svg {width} {height} on:click={() => {
   tooltip = null;
@@ -164,10 +175,12 @@ let colors = colorRange; // Initial colours
   </div>
   {/if}
 </div>
-<button on:click={toggleLabels}>Toggle Labels</button>
+<!-- <button on:click={toggleLabels}>Toggle Labels</button> -->
 
 <style>
-  /* :global(.tick text, .axis-title)   */
+  .bold{
+    font-weight: 700;
+  }
   h1,h3{
     font-size:1.6em;
     font-weight: bold;
@@ -222,5 +235,70 @@ let colors = colorRange; // Initial colours
     }
     span.key{
         font-weight:700;
+    }
+
+    /* toggle */
+    #toggle-container{
+      display:flex; align-items:center;
+      flex-direction: row;
+      justify-content: left;
+      margin-left: 1.3em;
+      margin-top: 0.5em;
+      flex-wrap: wrap;
+      column-gap: 10px;
+      row-gap: 5px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 35px;
+      height: 20px;
+    }
+  
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #2f8fce;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 20px;
+    }
+  
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: 0.2s;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+  
+    input:checked + .slider {
+      background-color: #57b0eb;
+    }
+  
+    input:checked + .slider {
+      box-shadow: 0 0 1px #57b0eb;
+    }
+  
+    input:checked + .slider:before {
+      -webkit-transform: translateX(16px);
+      -ms-transform: translateX(16px);
+      transform: translateX(16px);
     }
 </style>
