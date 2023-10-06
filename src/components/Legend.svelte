@@ -12,14 +12,14 @@
     <div class="legend" on:mouseout={() =>{
         hoveredLegend = null;
     }}>
-        {#each legendScale.domain() as impact}
+        {#each legendScale.domain() as legendLabel}
             <p
             on:mouseover={() => {
-                hoveredLegend = impact;
+                hoveredLegend = legendLabel;
             }}
-            class:unhovered={hoveredLegend && hoveredLegend !== impact}>
-                <span style="background-color: {legendScale(impact)}"></span>
-                {impact}
+            class:unhovered={hoveredLegend && hoveredLegend !== legendLabel}>
+                <span style="background-color: {legendScale(legendLabel)}"></span>
+                {legendLabel}
             </p>
         {/each}
     </div>

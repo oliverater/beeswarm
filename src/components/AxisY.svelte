@@ -1,6 +1,6 @@
 <script>
     export let yScale;
-    const ticks = yScale.domain();
+    $: ticks = yScale.domain();
 </script>
 
 <g class="axis y">

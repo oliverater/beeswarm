@@ -12,22 +12,9 @@
 
 
   const RADIUS = 8
-  const simulation = forceSimulation(data)
-  $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
-  .force("y", forceY().y(d => yScale(d.region)).strength(0.4))
-  .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.3)
-  .alphaDecay(0.0005)
-  .restart()
-  }
 
-  $: console.log( simulation.nodes( ) )
-
-  let nodes = []; // An empty array which will be populated once the simulation ticks
-  simulation.on("tick", () => {
-    nodes = simulation.nodes(); // Update the nodes array
-});
+  const region = data.map(d => d.region);
+  const impact = data.map(d => d.impact);
 
   let width = 400,
       height = 600;
@@ -59,12 +46,7 @@
   //   .sort((a,b) => a[1] - b[1])
   //   .map((d) => d[0]);
 
-const region = data.map(d => d.region);
-const impact = data.map(d => d.impact);
-
-  // console.log({events})
-
-  const colorRange = [
+const colorRange = [
     "#999999", //drought
     "#0b4572", //extreme rainfall
     "#c7432b", // heatwave
@@ -73,23 +55,68 @@ const impact = data.map(d => d.impact);
     "#c6e7fa" // Cold spell
   ]
 
-  const colorScale = scaleOrdinal()
-  .domain(region)
-  .range(colorRange)
+  const colorRange2 = [
+    "#999999", //drought
+    "#0b4572", //extreme rainfall
+    "#c7432b", // heatwave
+    "#2f8fce", // Storm, extreme rainfall
+    "#ff00ff", // Wildfire
+  ]
+
+let yAxisLabel = region; // Initial y-axis label
+let legendLabel = impact; // Initial legend label
+let colors = colorRange; // Initial colours
+
+  $: colorScale = scaleOrdinal()
+  .domain(legendLabel)
+  .range(colors)
 
 
-  const legendScale = scaleOrdinal()
-  .domain(impact)
-  .range(colorRange)
+  $: legendScale = scaleOrdinal()
+  .domain(legendLabel)
+  .range(colors)
 
 
-  let yScale = scaleBand()
-  .domain(region)
-  .range([0, innerHeight])
+  $: yScale = scaleBand()
+  .domain(yAxisLabel)
+  .range([0, innerHeight]);
+
+  const simulation = forceSimulation(data)
+  $: {
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
+  .force("y", forceY()
+  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
+  .strength(0.4))
+  .force("collide", forceCollide().radius(RADIUS))
+  .alpha(0.3)
+  .alphaDecay(0.0005)
+  .restart()
+  }
+
+  $: console.log( simulation.nodes( ) )
+
+  let nodes = []; // An empty array which will be populated once the simulation ticks
+  $: simulation.on("tick", () => {
+    nodes = simulation.nodes(); // Update the nodes array
+});
 
   let tooltip;
 
   let hoveredLegend;
+  let groupbyContinent = true;
+  $: console.log(groupbyContinent);
+  const toggleLabels = () => {
+    // Toggle the labels between 'value' and 'region' for both yAxis and legend
+    yAxisLabel = yAxisLabel === impact ? region : impact;
+    legendLabel = legendLabel === region ? impact : region;
+    colors = colors === colorRange ? colorRange2 : colorRange;
+    groupbyContinent = !groupbyContinent;
+    // Re-render the chart based on the updated labels
+    // updateChart();
+  };
+
+//   const updateChart = () => {
+// };
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
@@ -101,13 +128,13 @@ const impact = data.map(d => d.impact);
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <AxisY {yScale}></AxisY>
-    {#each nodes as node}
+    $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <circle
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={legendScale(node.impact)}
+      fill={colorScale(node.impact)}
       stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? "black" : "transparent" : "black"}
       opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? 1 : 0.3 : 1}
       on:click={() => {
@@ -137,6 +164,7 @@ const impact = data.map(d => d.impact);
   </div>
   {/if}
 </div>
+<button on:click={toggleLabels}>Toggle Labels</button>
 
 <style>
   /* :global(.tick text, .axis-title)   */
