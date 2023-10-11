@@ -123,8 +123,8 @@ let checked = false;
       cy={node.y}
       r={RADIUS}
       fill={groupbyContinent ? legendScale(node.impact) : legendScale(node.region)}
-      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? "black" : "transparent" : "black"}
-      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact ? 1 : 0.3 : 1}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? 1 : 0.3 : 1 }
       on:click={() => {
         tooltip = node;
       }}
