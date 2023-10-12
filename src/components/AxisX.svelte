@@ -11,9 +11,13 @@
 
 <g class="axis x">
     {#each ticks as tick}
+    {console.log(tick)}
         <g class="tick" transform="translate({xScale(tick)}, 0)">
             <text x="-20" y={height+20}>{tick}</text>
             <line x1="0" x2="0" y1="0" y2={height} stroke="#d1d1d1"></line>
+            <!-- <line x1="33%" x2="33%" y1="0" y2={height} stroke="#ff00ff"></line> -->
+            <!-- <line x1="4.75%" x2="4.75%" y1="0" y2={height} stroke="#ff00ff"></line> -->
+            <!-- <line x1="7.5%" x2="7.5%" y1="0" y2={height} stroke="#ff00ff"></line> -->
     </g>
     {/each}
     <text class="axis-title" x={width/2} y={height+30} text-anchor="middle" dominant-baseline="hanging" dy="5">Years</text>

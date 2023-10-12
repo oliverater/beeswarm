@@ -64,7 +64,7 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.4))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.75))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
   .strength(0.3))
