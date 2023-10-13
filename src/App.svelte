@@ -33,7 +33,7 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015, 2023]) //INPUT
+  .domain([2015.0, 2023.99]) //INPUT
   .range([0, innerWidth]) //OUTPUT
 
 const colorRange = [
@@ -64,7 +64,7 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.4))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.75))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
   .strength(0.3))
