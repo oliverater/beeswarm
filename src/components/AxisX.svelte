@@ -15,7 +15,7 @@
     <!-- {console.log(tick)} -->
         <g class="tick" transform="translate({xScale(tick)}, 0)">
             <text x="-20" y={height+20}>{tick}</text>
-            <line x1="0" x2="0" y1="0" y2={height} stroke="#d1d1d1" width="{innerWidth/9}"></line>
+            <line x1="0" x2="0" y1="0" y2={height} stroke="#d1d1d1"></line>
             <line x1="{xScale(tick+0.25)}" x2="{xScale(tick+0.25)}" y1="0" y2={height} stroke="#efefef"></line>
             <line class="mid" x1="{xScale(tick-0.25)}" x2="{xScale(tick-0.25)}" y1="0" y2={height} stroke="#efefef"></line>
             <line x1="{xScale(tick+0.5)}" x2="{xScale(tick+0.5)}" y1="0" y2={height} stroke="#efefef"></line>
@@ -28,7 +28,5 @@
 </g>
 
 <style>
-    line.mid:first-child{
-        display: none !important;
-    }
+    
 </style>

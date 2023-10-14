@@ -83,6 +83,13 @@ let legendLabel = impact; // Initial legend label
 
   let tooltip;
 
+  let impactRate = {
+    "Impacts worsened by climate change" : "^",
+    "More severe or likely" : "^",
+    "No evidence of change" : "–",
+    "Less severe or likely" : "v"
+  }
+
   let hoveredLegend;
   let groupbyContinent = true;
 
@@ -146,7 +153,7 @@ let checked = false;
           <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
       </h3>
       <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-          <p class="main-outcome">{tooltip.outcome}</p>
+          <p class="main-outcome">{impactRate[tooltip.outcome]?impactRate[tooltip.outcome]:tooltip.outcome}{tooltip.outcome}</p>
           <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
           <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
           <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
@@ -285,5 +292,10 @@ let checked = false;
       -webkit-transform: translateX(16px);
       -ms-transform: translateX(16px);
       transform: translateX(16px);
+    }
+
+    /* Cant remove initial lines from X Axis */
+    :global(.mid:first-child){
+        display: none !important;
     }
 </style>
