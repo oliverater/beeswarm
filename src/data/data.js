@@ -1,6 +1,8 @@
 export default [
   {
     "year": 2015,
+    "quarter": 0.5,
+    "xAxis": 2015.5,
     "date": "24/07/2015",
     "tooltipDate": "July 2015",
     "impact": "Drought",
@@ -17,6 +19,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.25,
+    "xAxis": 2017.25,
     "date": "23/03/2017",
     "tooltipDate": "March 2017",
     "impact": "Drought",
@@ -33,6 +37,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.25,
+    "xAxis": 2017.25,
     "date": "30/03/2017",
     "tooltipDate": "March 2017",
     "impact": "Drought",
@@ -49,6 +55,8 @@ export default [
   },
   {
     "year": 2018,
+    "quarter": 0.5,
+    "xAxis": 2018.5,
     "date": "13/07/2018",
     "tooltipDate": "July 2018",
     "impact": "Drought",
@@ -65,6 +73,8 @@ export default [
   },
   {
     "year": 2021,
+    "quarter": 0,
+    "xAxis": 2021,
     "date": "01/12/2021",
     "tooltipDate": "December 2021",
     "impact": "Drought",
@@ -81,6 +91,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.25,
+    "xAxis": 2022.25,
     "date": "11/04/2022",
     "tooltipDate": "April 2022",
     "impact": "Extreme rainfall",
@@ -97,6 +109,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.25,
+    "xAxis": 2022.25,
     "date": "13/05/2022",
     "tooltipDate": "May 2022",
     "impact": "Extreme rainfall",
@@ -113,6 +127,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.75,
+    "xAxis": 2022.75,
     "date": "16/11/2022",
     "tooltipDate": "November 2022",
     "impact": "Drought",
@@ -129,6 +145,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.75,
+    "xAxis": 2022.75,
     "date": "16/12/2022",
     "tooltipDate": "December 2022",
     "impact": "Extreme rainfall",
@@ -145,6 +163,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.25,
+    "xAxis": 2023.25,
     "date": "27/03/2023",
     "tooltipDate": "March 2023",
     "impact": "Drought",
@@ -161,6 +181,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.5,
+    "xAxis": 2023.5,
     "date": "29/06/2023",
     "tooltipDate": "June 2023",
     "impact": "Extreme rainfall",
@@ -177,6 +199,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.25,
+    "xAxis": 2023.25,
     "date": "05/05/2023",
     "tooltipDate": "May 2023",
     "impact": "Heatwave",
@@ -193,6 +217,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.75,
+    "xAxis": 2016.75,
     "date": "21/12/2016",
     "tooltipDate": "December 2016",
     "impact": "Heatwave",
@@ -209,6 +235,8 @@ export default [
   },
   {
     "year": 2015,
+    "quarter": 0.75,
+    "xAxis": 2015.75,
     "date": "01/12/2015",
     "tooltipDate": "December 2015",
     "impact": "Extreme rainfall",
@@ -225,6 +253,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.5,
+    "xAxis": 2016.5,
     "date": "01/06/2016",
     "tooltipDate": "June 2016",
     "impact": "Heatwave",
@@ -241,6 +271,8 @@ export default [
   },
   {
     "year": 2018,
+    "quarter": 0.5,
+    "xAxis": 2018.5,
     "date": "17/07/2018",
     "tooltipDate": "July 2018",
     "impact": "Extreme rainfall",
@@ -257,6 +289,8 @@ export default [
   },
   {
     "year": 2019,
+    "quarter": 0.25,
+    "xAxis": 2019.25,
     "date": "15/03/2019",
     "tooltipDate": "March 2019",
     "impact": "Extreme rainfall",
@@ -273,6 +307,8 @@ export default [
   },
   {
     "year": 2020,
+    "quarter": 0.5,
+    "xAxis": 2020.5,
     "date": "15/07/2020",
     "tooltipDate": "July 2020",
     "impact": "Heatwave",
@@ -289,6 +325,8 @@ export default [
   },
   {
     "year": 2021,
+    "quarter": 0.75,
+    "xAxis": 2021.75,
     "date": "16/12/2021",
     "tooltipDate": "December 2021",
     "impact": "Extreme rainfall",
@@ -305,6 +343,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.25,
+    "xAxis": 2022.25,
     "date": "18/05/2022",
     "tooltipDate": "May 2022",
     "impact": "Storm, extreme rainfall",
@@ -321,6 +361,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.25,
+    "xAxis": 2022.25,
     "date": "23/05/2022",
     "tooltipDate": "May 2022",
     "impact": "Heatwave",
@@ -337,6 +379,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.75,
+    "xAxis": 2022.75,
     "date": "14/09/2022",
     "tooltipDate": "September 2022",
     "impact": "Extreme rainfall",
@@ -353,6 +397,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.25,
+    "xAxis": 2023.25,
     "date": "18/05/2023",
     "tooltipDate": "May 2023",
     "impact": "Heatwave",
@@ -369,6 +415,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.25,
+    "xAxis": 2016.25,
     "date": "18/03/2016",
     "tooltipDate": "March 2016",
     "impact": "Heatwave",
@@ -385,6 +433,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0,
+    "xAxis": 2017,
     "date": "21/02/2017",
     "tooltipDate": "February 2017",
     "impact": "Heatwave",
@@ -401,6 +451,8 @@ export default [
   },
   {
     "year": 2020,
+    "quarter": 0,
+    "xAxis": 2020,
     "date": "10/01/2020",
     "tooltipDate": "January 2020",
     "impact": "Wildfire",
@@ -417,6 +469,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.25,
+    "xAxis": 2023.25,
     "date": "14/03/2023",
     "tooltipDate": "March 2023",
     "impact": "Extreme rainfall",
@@ -433,6 +487,8 @@ export default [
   },
   {
     "year": 2015,
+    "quarter": 0.5,
+    "xAxis": 2015.5,
     "date": "10/07/2015",
     "tooltipDate": "July 2015",
     "impact": "Heatwave",
@@ -449,6 +505,8 @@ export default [
   },
   {
     "year": 2015,
+    "quarter": 0.75,
+    "xAxis": 2015.75,
     "date": "16/12/2015",
     "tooltipDate": "Decmeber 2015",
     "impact": "Extreme rainfall",
@@ -465,6 +523,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.5,
+    "xAxis": 2016.5,
     "date": "09/07/2016",
     "tooltipDate": "July 2016",
     "impact": "Extreme rainfall",
@@ -481,6 +541,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0,
+    "xAxis": 2017,
     "date": "12/01/2017",
     "tooltipDate": "January 2017",
     "impact": "Cold spell",
@@ -497,6 +559,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.5,
+    "xAxis": 2017.5,
     "date": "29/06/2017",
     "tooltipDate": "June 2017",
     "impact": "Heatwave",
@@ -513,6 +577,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.75,
+    "xAxis": 2017.75,
     "date": "27/09/2017",
     "tooltipDate": "September 2017",
     "impact": "Heatwave",
@@ -529,6 +595,8 @@ export default [
   },
   {
     "year": 2018,
+    "quarter": 0.25,
+    "xAxis": 2018.25,
     "date": "16/03/2018",
     "tooltipDate": "March 2018",
     "impact": "Storm, extreme rainfall",
@@ -545,6 +613,8 @@ export default [
   },
   {
     "year": 2018,
+    "quarter": 0.5,
+    "xAxis": 2018.5,
     "date": "28/07/2018",
     "tooltipDate": "July 2018",
     "impact": "Heatwave",
@@ -561,6 +631,8 @@ export default [
   },
   {
     "year": 2019,
+    "quarter": 0.5,
+    "xAxis": 2019.5,
     "date": "02/07/2019",
     "tooltipDate": "July 2019",
     "impact": "Heatwave",
@@ -577,6 +649,8 @@ export default [
   },
   {
     "year": 2019,
+    "quarter": 0.5,
+    "xAxis": 2019.5,
     "date": "02/08/2019",
     "tooltipDate": "August 2019",
     "impact": "Heatwave",
@@ -593,6 +667,8 @@ export default [
   },
   {
     "year": 2021,
+    "quarter": 0.5,
+    "xAxis": 2021.5,
     "date": "15/06/2021",
     "tooltipDate": "June 2021",
     "impact": "Cold spell",
@@ -609,6 +685,8 @@ export default [
   },
   {
     "year": 2021,
+    "quarter": 0.5,
+    "xAxis": 2021.5,
     "date": "23/08/2021",
     "tooltipDate": "August 2021",
     "impact": "Extreme rainfall",
@@ -625,6 +703,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.5,
+    "xAxis": 2022.5,
     "date": "28/07/2022",
     "tooltipDate": "July 2022",
     "impact": "Heatwave",
@@ -641,6 +721,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.25,
+    "xAxis": 2023.25,
     "date": "31/05/2023",
     "tooltipDate": "May 2023",
     "impact": "Extreme rainfall",
@@ -657,6 +739,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0.5,
+    "xAxis": 2023.5,
     "date": "25/07/2023",
     "tooltipDate": "July 2023",
     "impact": "Heatwave",
@@ -673,6 +757,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.5,
+    "xAxis": 2016.5,
     "date": "14/08/2016",
     "tooltipDate": "August 2016",
     "impact": "Extreme rainfall",
@@ -689,6 +775,8 @@ export default [
   },
   {
     "year": 2016,
+    "quarter": 0.75,
+    "xAxis": 2016.75,
     "date": "08/12/2016",
     "tooltipDate": "December 2016",
     "impact": "Cold spell",
@@ -705,6 +793,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.25,
+    "xAxis": 2017.25,
     "date": "08/03/2017",
     "tooltipDate": "March 2017",
     "impact": "Heatwave",
@@ -721,6 +811,8 @@ export default [
   },
   {
     "year": 2017,
+    "quarter": 0.5,
+    "xAxis": 2017.5,
     "date": "31/08/2017",
     "tooltipDate": "August 2017",
     "impact": "Extreme rainfall",
@@ -737,6 +829,8 @@ export default [
   },
   {
     "year": 2018,
+    "quarter": 0,
+    "xAxis": 2018,
     "date": "29/01/2018",
     "tooltipDate": "January 2018",
     "impact": "Cold spell",
@@ -753,6 +847,8 @@ export default [
   },
   {
     "year": 2019,
+    "quarter": 0.75,
+    "xAxis": 2019.75,
     "date": "27/09/2019",
     "tooltipDate": "September 2019",
     "impact": "Extreme rainfall",
@@ -769,6 +865,8 @@ export default [
   },
   {
     "year": 2021,
+    "quarter": 0.5,
+    "xAxis": 2021.5,
     "date": "07/07/2021",
     "tooltipDate": "July 2021",
     "impact": "Heatwave",
@@ -785,6 +883,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.75,
+    "xAxis": 2022.75,
     "date": "05/10/2022",
     "tooltipDate": "October 2022",
     "impact": "Drought",
@@ -801,6 +901,8 @@ export default [
   },
   {
     "year": 2015,
+    "quarter": 0.75,
+    "xAxis": 2015.75,
     "date": "10/09/2015",
     "tooltipDate": "September 2015",
     "impact": "Drought",
@@ -817,6 +919,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.5,
+    "xAxis": 2022.5,
     "date": "04/07/2022",
     "tooltipDate": "July 2022",
     "impact": "Extreme rainfall",
@@ -833,6 +937,8 @@ export default [
   },
   {
     "year": 2022,
+    "quarter": 0.75,
+    "xAxis": 2022.75,
     "date": "21/12/2022",
     "tooltipDate": "December 2022",
     "impact": "Heatwave",
@@ -849,6 +955,8 @@ export default [
   },
   {
     "year": 2023,
+    "quarter": 0,
+    "xAxis": 2023,
     "date": "16/02/2023",
     "tooltipDate": "February 2023",
     "impact": "Drought",

@@ -12,8 +12,9 @@
 {#if visible}
 <div class="tooltip">
     <div class="close-tooltip" on:click={toggleVissible}>X</div>
+    <span class="impact" style="background-color:{legendScale(data.impact)}"></span>
     <h3>
-        <span class="impact" style="background-color:{legendScale(data.impact)}">{data.impact}</span><a href="{data.study}" target="_blank" rel="noreferrer">{data.tooltipDate},{data.country}</a>
+        {data.impact}<a href="{data.study}" target="_blank" rel="noreferrer">{data.tooltipDate},{data.country}</a>
     </h3>
         <p><span class="key">Outcome:</span>{data.outcomeSummary}</p>
         <p><span class="key">Impacts:</span>{data.impactSummary}</p>
@@ -49,10 +50,11 @@
         cursor: pointer;
     }
     .impact{
-        border-radius:3px;
-        padding:1.2px;
-        width: fit-content;
-        color: #f4f4f4;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border-radius: 50%;
+        border: solid 1px #333333;
     }
     span.key{
         font-weight:700;

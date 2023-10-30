@@ -33,18 +33,8 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015, 2023]) //INPUT
+  .domain([2015.0, 2023.99]) //INPUT
   .range([0, innerWidth]) //OUTPUT
-
-  // import { mean, rollups } from "d3-array";
-
-  // const region = rollups(
-  //   data,
-  //   (v) => mean(v, (d) => d.year),
-  //   (d) => d.region
-  //   )
-  //   .sort((a,b) => a[1] - b[1])
-  //   .map((d) => d[0]);
 
 const colorRange = [
     "#999999", //drought
@@ -55,17 +45,8 @@ const colorRange = [
     "#c6e7fa" // Cold spell
   ]
 
-  const colorRange2 = [
-    "#999999", //drought
-    "#0b4572", //extreme rainfall
-    "#c7432b", // heatwave
-    "#2f8fce", // Storm, extreme rainfall
-    "#ff00ff", // Wildfire
-  ]
-
 let yAxisLabel = region; // Initial y-axis label
 let legendLabel = impact; // Initial legend label
-let colors = colorRange; // Initial colours
 
   $: colorScale = scaleOrdinal()
   .domain(legendLabel)
@@ -83,12 +64,12 @@ let colors = colorRange; // Initial colours
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.5))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.75))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.4))
+  .strength(0.3))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.3)
+  .alpha(0.5)
   .alphaDecay(0.0005)
   .restart()
   }
@@ -102,24 +83,25 @@ let colors = colorRange; // Initial colours
 
   let tooltip;
 
+  let impactRate = {
+    "Impacts worsened by climate change" : "^",
+    "More severe or likely" : "^",
+    "No evidence of change" : "–",
+    "Less severe or likely" : "v"
+  }
+
   let hoveredLegend;
   let groupbyContinent = true;
-  $: console.log(groupbyContinent);
+
+//update chart
+
   const toggleLabels = () => {
-    // Toggle the labels between 'value' and 'region' for both yAxis and legend
     yAxisLabel = yAxisLabel === impact ? region : impact;
     legendLabel = legendLabel === region ? impact : region;
-    // colors = colors === colorRange ? colorRange2 : colorRange;
     groupbyContinent = !groupbyContinent;
-    // Re-render the chart based on the updated labels
-    // updateChart();
   };
 
-//   const updateChart = () => {
-// };
-
 let checked = false;
-let color = "#2196F3";
 </script>
 
 <h1>Extreme weather attribution study tracker</h1>
@@ -133,14 +115,18 @@ let color = "#2196F3";
     <p class="{checked ? 'bold': ''}">Impact</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <svg {width} {height} on:click={() => {
   tooltip = null;
 }}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
-    <AxisY {yScale}></AxisY>
+    <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
+    <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
+    <AxisY {yScale} {width}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <circle
       cx={node.x}
       cy={node.y}
@@ -160,14 +146,16 @@ let color = "#2196F3";
   </g>
 </svg>
   {#if tooltip}
-    <!-- <Tooltip data={tooltip} {legendScale}></Tooltip> -->
     <div class="tooltip">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div class="close-tooltip" on:click={() => {
         tooltip = null;
       }}>X</div>
       <h3>
-          <span class="impact" style="background-color:{legendScale(tooltip.impact)}">{tooltip.impact}</span><a href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate},{tooltip.country}</a>
+          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
       </h3>
+      <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
+          <p class="main-outcome">{impactRate[tooltip.outcome]?impactRate[tooltip.outcome]:tooltip.outcome}{tooltip.outcome}</p>
           <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
           <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
           <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
@@ -175,7 +163,6 @@ let color = "#2196F3";
   </div>
   {/if}
 </div>
-<!-- <button on:click={toggleLabels}>Toggle Labels</button> -->
 
 <style>
   .bold{
@@ -190,8 +177,8 @@ let color = "#2196F3";
     margin-left:0.8em;
   }
   p.summary{
-    line-height: 1.5;
-    font-size:1.25em;
+    line-height: 1.2;
+    font-size:1.15em;
   }
   circle{
     cursor:pointer;
@@ -204,7 +191,7 @@ let color = "#2196F3";
   }
   .tooltip{
         position: absolute;
-        background: rgba(255, 255, 255, 0.95);
+        background: #fffaf0;
         box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
         padding: 2.5em;
         border-radius: 3px;
@@ -228,13 +215,20 @@ let color = "#2196F3";
         cursor: pointer;
     }
     .impact{
-        border-radius:3px;
-        padding:1.2px;
-        width: fit-content;
-        color: #f4f4f4;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border-radius: 50%;
+        border: solid 1px #333333;
     }
     span.key{
         font-weight:700;
+    }
+
+    a.metadata{
+      text-decoration: underline;
+      color:#333333;
+      font-weight: 700;
     }
 
     /* toggle */
@@ -300,5 +294,10 @@ let color = "#2196F3";
       -webkit-transform: translateX(16px);
       -ms-transform: translateX(16px);
       transform: translateX(16px);
+    }
+
+    /* Cant remove initial lines from X Axis */
+    :global(.mid:first-child){
+        display: none !important;
     }
 </style>
