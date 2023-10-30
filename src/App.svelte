@@ -69,7 +69,7 @@ let legendLabel = impact; // Initial legend label
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
   .strength(0.3))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.2)
+  .alpha(0.5)
   .alphaDecay(0.0005)
   .restart()
   }
@@ -82,6 +82,13 @@ let legendLabel = impact; // Initial legend label
 });
 
   let tooltip;
+
+  let impactRate = {
+    "Impacts worsened by climate change" : "^",
+    "More severe or likely" : "^",
+    "No evidence of change" : "–",
+    "Less severe or likely" : "v"
+  }
 
   let hoveredLegend;
   let groupbyContinent = true;
@@ -114,7 +121,9 @@ let checked = false;
 }}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
-    <AxisY {yScale}></AxisY>
+    <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
+    <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
+    <AxisY {yScale} {width}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -146,7 +155,7 @@ let checked = false;
           <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
       </h3>
       <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-          <p class="main-outcome">{tooltip.outcome}</p>
+          <p class="main-outcome">{impactRate[tooltip.outcome]?impactRate[tooltip.outcome]:tooltip.outcome}{tooltip.outcome}</p>
           <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
           <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
           <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
@@ -285,5 +294,10 @@ let checked = false;
       -webkit-transform: translateX(16px);
       -ms-transform: translateX(16px);
       transform: translateX(16px);
+    }
+
+    /* Cant remove initial lines from X Axis */
+    :global(.mid:first-child){
+        display: none !important;
     }
 </style>
