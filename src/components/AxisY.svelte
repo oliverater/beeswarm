@@ -8,6 +8,7 @@
 
 <g class="axis y">
     {#each ticks as tick}
+    <!-- <rect width="100" height="20" style="fill:white;" /> -->
         <g class="tick">
             <text y={yScale(tick)} x="-125">
                 {tick}
