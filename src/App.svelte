@@ -37,12 +37,13 @@
   .range([0, innerWidth]) //OUTPUT
 
 const colorRange = [
-    "#999999", //drought
-    "#0b4572", //extreme rainfall
-    "#c7432b", // heatwave
-    "#2f8fce", // Storm, extreme rainfall
-    "#efc530", // Wildfire
-    "#c6e7fa" // Cold spell
+    "#dc006e", //drought
+    "#005582", //extreme rainfall
+    "#f04600", // heatwave
+    "#211151", // Storm, extreme rainfall
+    "#ffb94b", // Wildfire
+    "#00aaaa", // Cold spell
+    "#00966e" 
   ]
 
 let yAxisLabel = region; // Initial y-axis label
@@ -169,12 +170,13 @@ let checked = false;
     font-weight: 700;
   }
   h1,h3{
-    font-size:1.6em;
+    font-size:2em;
     font-weight: bold;
     color: #333333;
+    font-family: 'Spectral', serif;
   }
   h1{
-    margin-left:0.8em;
+    margin-left:0.5em;
   }
   p.summary{
     line-height: 1.2;
@@ -191,7 +193,7 @@ let checked = false;
   }
   .tooltip{
         position: absolute;
-        background: #fffaf0;
+        background: #f5f5f5;
         box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
         padding: 2.5em;
         border-radius: 3px;
