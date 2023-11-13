@@ -16,7 +16,7 @@
   const region = data.map(d => d.region);
   const impact = data.map(d => d.impact);
 
-  let width = 400,
+  let width = 800,
       height = 600;
 
   const margin = {
@@ -34,7 +34,8 @@
 
   $: xScale = scaleLinear()
   .domain([2015.0, 2023.99]) //INPUT
-  .range([0, innerWidth]) //OUTPUT
+  .range([0, innerWidth])
+
 
 const colorRange = [
     "#dc006e", //drought
@@ -200,8 +201,8 @@ let checked = false;
         display: inline-grid;
         width: auto;
         top:5%;
-        left:20%;
-        right:10%;
+        left:10%;
+        right:5%;
         bottom:10%;
     }
     .close-tooltip{
