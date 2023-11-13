@@ -86,10 +86,11 @@ let legendLabel = impact; // Initial legend label
   let tooltip;
 
   let impactRate = {
-    "Impacts worsened by climate change" : "^",
-    "More severe or likely" : "^",
-    "No evidence of change" : "–",
-    "Less severe or likely" : "v"
+    "Impacts worsened by climate change" : "/static/upChevron.png",
+    "More severe or likely" : "/static/upChevron.png",
+    "No evidence of change" : "/static/noChevron.png",
+    "Inconclusive" : "/static/noChevron.png",
+    "Less severe or likely" : "/static/downChevron.png", 
   }
 
   let hoveredLegend;
@@ -157,7 +158,9 @@ let checked = false;
           <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
       </h3>
       <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-          <p class="main-outcome">{impactRate[tooltip.outcome]?impactRate[tooltip.outcome]:tooltip.outcome}{tooltip.outcome}</p>
+          <p class="main-outcome">
+            <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
+          </p>
           <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
           <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
           <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
@@ -223,6 +226,10 @@ let checked = false;
         display: inline-block;
         border-radius: 50%;
         border: solid 1px #333333;
+    }
+    img.impact-outcome{
+      max-width:25px;
+      height: auto;
     }
     span.key{
         font-weight:700;
