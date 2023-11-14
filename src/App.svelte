@@ -11,7 +11,7 @@
   import Tooltip from "$components/Tooltip.svelte";
 
 
-  const RADIUS = 8
+  const RADIUS = 10
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.impact);
@@ -40,11 +40,11 @@
 const colorRange = [
     "#dc006e", //drought
     "#005582", //extreme rainfall
-    "#f04600", // heatwave
+    "#ffb94b", // heatwave
     "#211151", // Storm, extreme rainfall
-    "#ffb94b", // Wildfire
-    "#00aaaa", // Cold spell
-    "#00966e" 
+    "#f04600", // Wildfire
+    "#00aaaa", 
+    "#00d7e6", // Cold spell
   ]
 
 let yAxisLabel = region; // Initial y-axis label
@@ -66,12 +66,12 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.75))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.3))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.3))
+  .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.5)
+  .alpha(0.15)
   .alphaDecay(0.0005)
   .restart()
   }
@@ -190,7 +190,7 @@ let checked = false;
     cursor:pointer;
   }
   circle:hover{
-    filter: brightness(115%);
+    filter: brightness(145%);
   }
   circle:focus{
     outline:none;
