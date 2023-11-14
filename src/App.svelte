@@ -86,11 +86,11 @@ let legendLabel = impact; // Initial legend label
   let tooltip;
 
   let impactRate = {
-    "Impacts worsened by climate change" : "/static/upChevron.png",
-    "More severe or likely" : "/static/upChevron.png",
-    "No evidence of change" : "/static/noChevron.png",
-    "Inconclusive" : "/static/noChevron.png",
-    "Less severe or likely" : "/static/downChevron.png", 
+    "Impacts worsened by climate change" : "static/upChevron.png",
+    "More severe or likely" : "static/upChevron.png",
+    "No evidence of change" : "static/noChevron.png",
+    "Inconclusive" : "static/noChevron.png",
+    "Less severe or likely" : "static/downChevron.png", 
   }
 
   let hoveredLegend;
