@@ -1,5 +1,8 @@
 <script> //test
   import data from "$data/data.js";
+  import upIcon from "$image/upChevron.png";
+  import noIcon from "$image/noChevron.png";
+  import downIcon from "$image/downChevron.png";
   //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   import { fade } from "svelte/transition";
@@ -69,10 +72,10 @@ let legendLabel = impact; // Initial legend label
   simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.3))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.25))
+  .strength(0.95))
   .force("collide", forceCollide().radius(RADIUS))
   .alpha(0.15)
-  .alphaDecay(0.0005)
+  .alphaDecay(0.00001)
   .restart()
   }
 
@@ -86,11 +89,11 @@ let legendLabel = impact; // Initial legend label
   let tooltip;
 
   let impactRate = {
-    "Impacts worsened by climate change" : "src/static/upChevron.png",
-    "More severe or likely" : "src/static/upChevron.png",
-    "No evidence of change" : "src/static/noChevron.png",
-    "Inconclusive" : "src/static/noChevron.png",
-    "Less severe or likely" : "src/static/downChevron.png", 
+    "Impacts worsened by climate change" : upIcon,
+    "More severe or likely" : upIcon,
+    "No evidence of change" : noIcon,
+    "Inconclusive" : noIcon,
+    "Less severe or likely" : downIcon, 
   }
 
   let hoveredLegend;

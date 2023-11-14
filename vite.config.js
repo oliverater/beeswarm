@@ -10,6 +10,7 @@ export default defineConfig({
       "$components": path.resolve('./src/components'),
       "$data": path.resolve("./src/data"),
       "$routes": path.resolve("./src/routes"),
+      "$image": path.resolve("./src/static"),
     }
   }
 })
