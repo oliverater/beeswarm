@@ -69,12 +69,12 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.3))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.2))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.95))
+  .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.15)
+  .alpha(0.35)
   .alphaDecay(0.00001)
   .restart()
   }
