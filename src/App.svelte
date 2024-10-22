@@ -14,13 +14,13 @@
   import Tooltip from "$components/Tooltip.svelte";
 
 
-  const RADIUS = 10
+  const RADIUS =12 
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.impact);
 
   let width = 800,
-      height = 600;
+      height = 220;
 
   const margin = {
     top: 50,
@@ -36,7 +36,7 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015.0, 2023.99]) //INPUT
+  .domain([2015, 2023]) //INPUT
   .range([0, innerWidth])
 
 
@@ -69,13 +69,13 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.2))
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.2))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
   .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
   .alpha(0.35)
-  .alphaDecay(0.00001)
+  .alphaDecay(0.01)
   .restart()
   }
 
@@ -127,8 +127,8 @@ let checked = false;
 }}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
-    <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
-    <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
+      <!-- <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
+      <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" /> -->
     <AxisY {yScale} {width}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
