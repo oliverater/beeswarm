@@ -3,7 +3,6 @@
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
-  //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   import { fade } from "svelte/transition";
   // import simulation from "d3-force/src/simulation";
@@ -13,18 +12,19 @@
   import Legend from "$components/Legend.svelte";
   import Tooltip from "$components/Tooltip.svelte";
 
+  import { mean, rollups } from "d3-array";
 
-  const RADIUS = 10
+  const RADIUS = 12
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.impact);
 
-  let width = 800,
-      height = 600;
+  let width = 400,
+      height = 500;
 
   const margin = {
     top: 50,
-    right: 50,
+    right: 200,
     bottom: 50,
     left: 150 
   };
@@ -36,7 +36,7 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015.0, 2023.99]) //INPUT
+  .domain([2015.0, 2024.0]) //INPUT
   .range([0, innerWidth])
 
 
@@ -48,6 +48,7 @@ const colorRange = [
     "#f04600", // Wildfire
     "#00aaaa", 
     "#00d7e6", // Cold spell
+    "#00966e",
   ]
 
 let yAxisLabel = region; // Initial y-axis label
@@ -69,13 +70,13 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.2))
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.1))
   .force("y", forceY()
-  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
+  .y((d) => (groupbyContinent ? yScale(d.region) : innerHeight / 2))
   .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.35)
-  .alphaDecay(0.00001)
+  .alpha(0.15)
+  .alphaDecay(0.01)
   .restart()
   }
 
@@ -151,25 +152,27 @@ let checked = false;
     {/each}
   </g>
 </svg>
-  {#if tooltip}
-    <div class="tooltip">
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <div class="close-tooltip" on:click={() => {
-        tooltip = null;
-      }}>X</div>
-      <h3>
-          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
-      </h3>
-      <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-          <p class="main-outcome">
-            <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
-          </p>
-          <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
-          <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
-          <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
-          <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
-  </div>
-  {/if}
+{#if tooltip}
+<div class="tooltip">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="close-tooltip" on:click={() => {
+    tooltip = null;
+  }}>X</div>
+  <h3>
+      <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
+  </h3>
+  <p>{tooltip.year}</p>
+  <!-- <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
+      <p class="main-outcome">
+        <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
+      </p> -->
+      <!-- <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+      <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
+      <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
+      <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p> -->
+</div>
+{/if}
+  
 </div>
 
 <style>
