@@ -116,11 +116,12 @@ let checked = false;
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
     <p class="{checked ? '': 'bold'}">Event type</p>
-    <p class="{checked ? '': 'bold'}">Region</p>
+    <!-- <p class="{checked ? '': 'bold'}">Region</p> -->
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
+    <p class="{checked ? 'bold': ''}">Region</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
