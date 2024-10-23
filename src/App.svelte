@@ -1,5 +1,6 @@
 <script> //test
-  import data from "$data/data.js";
+  import data from "$data/newData.js";
+  // import newData from "$data/new-data.js";
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
@@ -14,10 +15,10 @@
   import Tooltip from "$components/Tooltip.svelte";
 
 
-  const RADIUS = 10
+  const RADIUS = 8
 
   const region = data.map(d => d.region);
-  const impact = data.map(d => d.impact);
+  const impact = data.map(d => d.event);
 
   let width = 800,
       height = 600;
@@ -36,7 +37,7 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015.0, 2023.99]) //INPUT
+  .domain([2015.0, 2024.99]) //INPUT
   .range([0, innerWidth])
 
 
@@ -69,12 +70,12 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.2))
+  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.9))
   .force("y", forceY()
-  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.impact)))
-  .strength(0.25))
+  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.event)))
+  .strength(0.15))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.35)
+  .alpha(0.25)
   .alphaDecay(0.00001)
   .restart()
   }
@@ -113,12 +114,12 @@ let checked = false;
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
-    <p class="{checked ? '': 'bold'}">Continent</p>
+    <p class="{checked ? '': 'bold'}">Region</p>
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
-    <p class="{checked ? 'bold': ''}">Impact</p>
+    <p class="{checked ? 'bold': ''}">Event type</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -137,9 +138,9 @@ let checked = false;
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={groupbyContinent ? legendScale(node.impact) : legendScale(node.region)}
-      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? "black" : "transparent" : "black"}
-      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? 1 : 0.3 : 1 }
+      fill={groupbyContinent ? legendScale(node.event) : legendScale(node.region)}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? 1 : 0.3 : 1 }
       on:click={() => {
         tooltip = node;
       }}
@@ -158,7 +159,7 @@ let checked = false;
         tooltip = null;
       }}>X</div>
       <h3>
-          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
+          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
       </h3>
       <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
           <p class="main-outcome">
