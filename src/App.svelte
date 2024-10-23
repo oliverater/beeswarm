@@ -1,5 +1,5 @@
 <script> //test
-  import data from "$data/data.js";
+  import data from "$data/newData.js";
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
@@ -17,16 +17,16 @@
   const RADIUS = 12
 
   const region = data.map(d => d.region);
-  const impact = data.map(d => d.impact);
+  const impact = data.map(d => d.event);
 
   let width = 400,
       height = 500;
 
   const margin = {
     top: 50,
-    right: 200,
+    right: 50,
     bottom: 50,
-    left: 150 
+    left: 100 
   };
 
   $: innerWidth = width - margin.left - margin.right;
@@ -36,7 +36,7 @@
   import {scaleLinear, scaleBand, scaleOrdinal} from "d3-scale"; 
 
   $: xScale = scaleLinear()
-  .domain([2015.0, 2024.0]) //INPUT
+  .domain([2015.0, 2024.99]) //INPUT
   .range([0, innerWidth])
 
 
@@ -70,9 +70,9 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.1))
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.2))
   .force("y", forceY()
-  .y((d) => (groupbyContinent ? yScale(d.region) : innerHeight / 2))
+  .y((d) => (groupbyContinent ? innerHeight / 2 : innerHeight / 2))
   .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
   .alpha(0.15)
@@ -114,12 +114,12 @@ let checked = false;
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
-    <p class="{checked ? '': 'bold'}">Continent</p>
+    <p class="{checked ? '': 'bold'}">Event type</p>
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
-    <p class="{checked ? 'bold': ''}">Impact</p>
+    <p class="{checked ? 'bold': ''}">Continent</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -130,7 +130,7 @@ let checked = false;
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
     <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
-    <AxisY {yScale} {width}></AxisY>
+    <!-- <AxisY {yScale} {width}></AxisY> -->
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -138,9 +138,9 @@ let checked = false;
       cx={node.x}
       cy={node.y}
       r={RADIUS}
-      fill={groupbyContinent ? legendScale(node.impact) : legendScale(node.region)}
-      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? "black" : "transparent" : "black"}
-      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.impact || hoveredLegend === node.region ? 1 : 0.3 : 1 }
+      fill={groupbyContinent ? legendScale(node.event) : legendScale(node.region)}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? 1 : 0.3 : 1 }
       on:click={() => {
         tooltip = node;
       }}
@@ -159,17 +159,17 @@ let checked = false;
     tooltip = null;
   }}>X</div>
   <h3>
-      <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.impact) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.impact)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.impact)]}
+      <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
   </h3>
   <p>{tooltip.year}</p>
-  <!-- <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
+  <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
       <p class="main-outcome">
         <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
-      </p> -->
-      <!-- <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
-      <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
+      </p>
+      <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+      <p class="summary"><span class="key">Impacts: </span>{tooltip.impactsSummary}</p>
       <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
-      <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p> -->
+      <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
 </div>
 {/if}
   
@@ -210,7 +210,7 @@ let checked = false;
         display: inline-grid;
         width: auto;
         top:5%;
-        left:10%;
+        left:5%;
         right:5%;
         bottom:10%;
     }
