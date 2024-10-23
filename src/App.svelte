@@ -1,10 +1,8 @@
 <script> //test
   import data from "$data/newData.js";
-  // import newData from "$data/new-data.js";
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
-  //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   import { fade } from "svelte/transition";
   // import simulation from "d3-force/src/simulation";
@@ -14,20 +12,21 @@
   import Legend from "$components/Legend.svelte";
   import Tooltip from "$components/Tooltip.svelte";
 
+  import { mean, rollups } from "d3-array";
 
-  const RADIUS = 8
+  const RADIUS = 12
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.event);
 
-  let width = 800,
-      height = 600;
+  let width = 400,
+      height = 500;
 
   const margin = {
     top: 50,
     right: 50,
     bottom: 50,
-    left: 150 
+    left: 100 
   };
 
   $: innerWidth = width - margin.left - margin.right;
@@ -49,6 +48,7 @@ const colorRange = [
     "#f04600", // Wildfire
     "#00aaaa", 
     "#00d7e6", // Cold spell
+    "#00966e",
   ]
 
 let yAxisLabel = region; // Initial y-axis label
@@ -70,13 +70,14 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
-  simulation.force("x", forceX().x(d => xScale(d.xAxis)).strength(0.9))
+
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.2))
   .force("y", forceY()
-  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.event)))
-  .strength(0.15))
+  .y((d) => (groupbyContinent ? innerHeight / 2 : innerHeight / 2))
+  .strength(0.25))
   .force("collide", forceCollide().radius(RADIUS))
-  .alpha(0.25)
-  .alphaDecay(0.00001)
+  .alpha(0.15)
+  .alphaDecay(0.01)
   .restart()
   }
 
@@ -114,12 +115,12 @@ let checked = false;
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
+    <p class="{checked ? '': 'bold'}">Event type</p>
     <p class="{checked ? '': 'bold'}">Region</p>
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
-    <p class="{checked ? 'bold': ''}">Event type</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -130,7 +131,7 @@ let checked = false;
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
     <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
     <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
-    <AxisY {yScale} {width}></AxisY>
+    <!-- <AxisY {yScale} {width}></AxisY> -->
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -152,25 +153,28 @@ let checked = false;
     {/each}
   </g>
 </svg>
-  {#if tooltip}
-    <div class="tooltip">
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <div class="close-tooltip" on:click={() => {
-        tooltip = null;
-      }}>X</div>
-      <h3>
-          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
-      </h3>
-      <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-          <p class="main-outcome">
-            <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
-          </p>
-          <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
-          <p class="summary"><span class="key">Impacts: </span>{tooltip.impactSummary}</p>
-          <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
-          <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
-  </div>
-  {/if}
+
+{#if tooltip}
+<div class="tooltip">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="close-tooltip" on:click={() => {
+    tooltip = null;
+  }}>X</div>
+  <h3>
+      <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
+  </h3>
+  <p>{tooltip.year}</p>
+  <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
+      <p class="main-outcome">
+        <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
+      </p>
+      <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+      <p class="summary"><span class="key">Impacts: </span>{tooltip.impactsSummary}</p>
+      <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
+      <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
+</div>
+{/if}
+  
 </div>
 
 <style>
@@ -208,7 +212,7 @@ let checked = false;
         display: inline-grid;
         width: auto;
         top:5%;
-        left:10%;
+        left:5%;
         right:5%;
         bottom:10%;
     }
