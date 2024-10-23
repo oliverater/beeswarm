@@ -70,6 +70,7 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
+
   simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.2))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? innerHeight / 2 : innerHeight / 2))
@@ -115,11 +116,11 @@ let checked = false;
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
     <p class="{checked ? '': 'bold'}">Event type</p>
+    <p class="{checked ? '': 'bold'}">Region</p>
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
-    <p class="{checked ? 'bold': ''}">Continent</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -152,6 +153,7 @@ let checked = false;
     {/each}
   </g>
 </svg>
+
 {#if tooltip}
 <div class="tooltip">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
