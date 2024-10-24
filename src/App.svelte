@@ -1,9 +1,8 @@
 <script> //test
-  import data from "$data/data.js";
+  import data from "$data/newData.js";
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
-  //console.log(data);
   import {forceSimulation, forceX, forceY, forceCollide} from "d3-force";
   import { fade } from "svelte/transition";
   // import simulation from "d3-force/src/simulation";
@@ -13,14 +12,17 @@
   import Legend from "$components/Legend.svelte";
   import Tooltip from "$components/Tooltip.svelte";
 
+
   let Desktop = 10;
   let Mobile = 6
+
+  import { mean, rollups } from "d3-array";
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.event);
 
-  let width = 800,
-      height = 600;
+  let width = 400,
+      height = 500;
 
   const margin = {
     top: 50,
@@ -70,6 +72,7 @@ let legendLabel = impact; // Initial legend label
 
   const simulation = forceSimulation(data)
   $: {
+
   simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.3))
   .force("y", forceY()
   .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.event)))
@@ -129,6 +132,7 @@ let checked = false;
 }}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
+
     <AxisY {yScale} {width}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -169,6 +173,7 @@ let checked = false;
     {/each}
   </g>
 </svg>
+
   {#if tooltip}
     <div class="tooltip">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -195,6 +200,7 @@ let checked = false;
           <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p> -->
   </div>
   {/if}
+
 </div>
 
 <style>
@@ -233,7 +239,7 @@ let checked = false;
         flex-direction: column;
         width: auto;
         top:5%;
-        left:10%;
+        left:5%;
         right:5%;
         /* bottom:10%; */
     }

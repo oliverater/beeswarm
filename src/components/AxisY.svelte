@@ -10,6 +10,7 @@
     {#each ticks as tick}
     <!-- <rect width="100" height="20" style="fill:white;" /> -->
         <g class="tick">
+
             <text y={yScale(tick)} x="-35">
                 {tick}
             </text>
@@ -21,6 +22,6 @@
 
 <style>
     .tick{
-        text-anchor: end;
+        text-anchor:end
     }
 </style>
