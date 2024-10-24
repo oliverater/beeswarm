@@ -1,5 +1,5 @@
 <script> //test
-  import data from "$data/newData.js";
+  import data from "$data/data.js";
   import upIcon from "$image/upChevron.png";
   import noIcon from "$image/noChevron.png";
   import downIcon from "$image/downChevron.png";
