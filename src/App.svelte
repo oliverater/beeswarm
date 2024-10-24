@@ -12,9 +12,11 @@
   import Legend from "$components/Legend.svelte";
   import Tooltip from "$components/Tooltip.svelte";
 
-  import { mean, rollups } from "d3-array";
 
-  const RADIUS = 12
+  let Desktop = 10;
+  let Mobile = 6
+
+  import { mean, rollups } from "d3-array";
 
   const region = data.map(d => d.region);
   const impact = data.map(d => d.event);
@@ -26,8 +28,10 @@
     top: 50,
     right: 50,
     bottom: 50,
-    left: 100 
+    left: 165 
   };
+
+  // let innerWidth = 0;
 
   $: innerWidth = width - margin.left - margin.right;
   let innerHeight = height - margin.top - margin.bottom;
@@ -41,14 +45,12 @@
 
 
 const colorRange = [
-    "#dc006e", //drought
-    "#005582", //extreme rainfall
-    "#ffb94b", // heatwave
-    "#211151", // Storm, extreme rainfall
-    "#f04600", // Wildfire
-    "#00aaaa", 
-    "#00d7e6", // Cold spell
-    "#00966e",
+"#dc006e", // Heat 
+"#005582", // Rainfall
+"#ffb94b", // Drought
+"#00966e", // Storm
+"#f04600", // Wildfire
+"#00d7e6", // Cold spell
   ]
 
 let yAxisLabel = region; // Initial y-axis label
@@ -71,17 +73,17 @@ let legendLabel = impact; // Initial legend label
   const simulation = forceSimulation(data)
   $: {
 
-  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.2))
+  simulation.force("x", forceX().x(d => xScale(d.year)).strength(0.3))
   .force("y", forceY()
-  .y((d) => (groupbyContinent ? innerHeight / 2 : innerHeight / 2))
-  .strength(0.25))
-  .force("collide", forceCollide().radius(RADIUS))
+  .y((d) => (groupbyContinent ? yScale(d.region) : yScale(d.event)))
+  .strength(0.35))
+  .force("collide", forceCollide().radius(innerWidth < 550 ? Mobile : Desktop))
   .alpha(0.15)
-  .alphaDecay(0.01)
+  .alphaDecay(0.00001)
   .restart()
   }
 
-  $: console.log( simulation.nodes( ) )
+  // $: console.log( simulation.nodes( ) )
 
   let nodes = []; // An empty array which will be populated once the simulation ticks
   $: simulation.on("tick", () => {
@@ -112,16 +114,16 @@ let legendLabel = impact; // Initial legend label
 let checked = false;
 </script>
 
+<!-- <svelte:window bind:innerWidth /> -->
 <h1>Extreme weather attribution study tracker</h1>
 <Legend {legendScale} bind:hoveredLegend></Legend>
 <div id="toggle-container">
-    <p class="{checked ? '': 'bold'}">Event type</p>
-    <!-- <p class="{checked ? '': 'bold'}">Region</p> -->
+    <p class="{checked ? '': 'bold'}">Region</p>
       <label class="switch">
       <input type="checkbox" bind:checked on:click={toggleLabels}/>
       <span class="slider" />
     </label>
-    <p class="{checked ? 'bold': ''}">Region</p>
+    <p class="{checked ? 'bold': ''}">Event type</p>
 </div>
 <div class="chart-container" bind:clientWidth={width}>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -130,16 +132,16 @@ let checked = false;
 }}>
   <g class="inner-chart" transform="translate({margin.left}, {margin.top})">
     <AxisX xScale={xScale} height={innerHeight} width={innerWidth}></AxisX>
-    <rect width="115" height={innerHeight+20} x={-125} y={-20} style="fill:white;" />
-    <rect width="100" height={innerHeight+20} x={innerWidth} y={-20} style="fill:white;" />
-    <!-- <AxisY {yScale} {width}></AxisY> -->
+
+    <AxisY {yScale} {width}></AxisY>
     $: {#each nodes as node}
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    {#if innerWidth < 550}
     <circle
       cx={node.x}
       cy={node.y}
-      r={RADIUS}
+      r={Mobile}
       fill={groupbyContinent ? legendScale(node.event) : legendScale(node.region)}
       stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? "black" : "transparent" : "black"}
       opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? 1 : 0.3 : 1 }
@@ -151,31 +153,54 @@ let checked = false;
       }}
       tabindex=0
       />
+      {:else}
+      <circle
+      cx={node.x}
+      cy={node.y}
+      r={Desktop}
+      fill={groupbyContinent ? legendScale(node.event) : legendScale(node.region)}
+      stroke={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? "black" : "transparent" : "black"}
+      opacity={tooltip || hoveredLegend ? tooltip === node || hoveredLegend === node.event || hoveredLegend === node.region ? 1 : 0.3 : 1 }
+      on:click={() => {
+        tooltip = node;
+      }}
+      on:focus={() => {
+        tooltip = node;
+      }}
+      tabindex=0
+      />
+      {/if}
     {/each}
   </g>
 </svg>
 
-{#if tooltip}
-<div class="tooltip">
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="close-tooltip" on:click={() => {
-    tooltip = null;
-  }}>X</div>
-  <h3>
-      <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
-  </h3>
-  <p>{tooltip.year}</p>
-  <p><a class="metadata" href="{tooltip.study}" target="_blank" rel="noreferrer">{tooltip.tooltipDate}: {tooltip.country}</a></p>
-      <p class="main-outcome">
-        <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
-      </p>
-      <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
-      <p class="summary"><span class="key">Impacts: </span>{tooltip.impactsSummary}</p>
-      <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
-      <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p>
-</div>
-{/if}
-  
+  {#if tooltip}
+    <div class="tooltip">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div class="close-tooltip" on:click={() => {
+        tooltip = null;
+      }}>X</div>
+      <h3>
+          <span class="impact" style="background-color:{groupbyContinent ? legendScale(tooltip.event) : legendScale(tooltip.region)}"></span> {groupbyContinent ? [(tooltip.event)+ " | " +(tooltip.region)] : [(tooltip.region)+ " | " +(tooltip.event)]}
+      </h3>
+      <p class="summary"><span class="key">{tooltip.tooltipDate}: {tooltip.country}</span></p>
+          <p class="summary">
+            <span class="key" style="display:block;margin-block-end:0.5em">Role of climate change:</span>
+            <img class="impact-outcome" src={impactRate[tooltip.outcome]}/> {tooltip.outcome}
+          </p>
+          <p class="summary"><span class="key">Outcome: </span>{tooltip.outcomeSummary}</p>
+          <p class="summary"><span class="key">Impacts: </span>{tooltip.impactsSummary}</p>
+          <hr>
+          <p class="summary"><span class="key"><a href="{tooltip.study}" target="_blank" rel="noreferrer">Link to study</a></span></p>
+
+          {#if tooltip.peerReviewed != ''}
+          <p class="summary"><span class="key">Peer review: <a href="{tooltip.peerReviewed}" target="_blank" rel="noreferrer">{tooltip.peerReviewed}</a></span></p>
+          {/if}
+          <!-- <p class="summary"><span class="key">Vulnerability: </span>{tooltip.vulnerabilitySummary}</p>
+          <p class="summary"><span class="key">Resilience: </span>{tooltip.resilienceSummary}</p> -->
+  </div>
+  {/if}
+
 </div>
 
 <style>
@@ -210,18 +235,37 @@ let checked = false;
         box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
         padding: 2.5em;
         border-radius: 3px;
-        display: inline-grid;
+        display: flex;
+        flex-direction: column;
         width: auto;
         top:5%;
         left:5%;
         right:5%;
-        bottom:10%;
+        /* bottom:10%; */
+    }
+    .tooltip > h3, .tooltip > p{
+      margin-block-end: 1em;
+    }
+    .tooltip > p a{
+      color: #dc006e;
+    }
+    .tooltip > hr{
+      border-bottom:1px solid #333333;
+      width: 100%;
+      margin-block-end: 2em;
+    }
+    span.section{
+      font-size:0.8em;
+      line-height: normal;
+      display: block;
+      font-weight: 700;
+      margin-block-end: 0.25em;
     }
     .close-tooltip{
         position: absolute;
         right: 0;
         margin-right: 1.2em;
-        margin-top: 1.2em;
+        margin-top:-1em;
         font-size: 1.2em;
         font-weight: 700;
     }
@@ -242,12 +286,6 @@ let checked = false;
     }
     span.key{
         font-weight:700;
-    }
-
-    a.metadata{
-      text-decoration: underline;
-      color:#333333;
-      font-weight: 700;
     }
 
     /* toggle */
@@ -319,4 +357,22 @@ let checked = false;
     :global(.mid:first-child){
         display: none !important;
     }
+    @media (max-width:776px){
+    :global(.x-axis){
+        font-size: 12px;
+    }
+    .tooltip > h3, .tooltip > p{
+      margin-block-end: 0.75em;
+    }
+    .tooltip > p a{
+      font-size:14px;
+      line-break: anywhere;
+    }
+  }
+  @media (max-width:700px){
+    :global(text .x-axis){
+      /* display: none; */
+      fill: #57b0eb;
+    }
+  }
 </style>
